@@ -51,7 +51,7 @@
     </div>
   </header>
 
-  <!-- Main Container -->
+  <!-- Contenedor Principal -->
   <main class="max-w-3xl mx-auto px-4 sm:px-6 py-12 w-full flex-grow">
     
     <div class="text-center max-w-xl mx-auto mb-10">
@@ -96,21 +96,21 @@
     <!-- Loader -->
     <div id="loader" class="hidden text-center py-12">
       <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-900 border-t-transparent mb-4"></div>
-      <p class="text-slate-600 font-semibold text-sm">Conectando con InterSoft API...</p>
+      <p class="text-slate-600 font-semibold text-sm">Consultando guía en InterSoft API...</p>
     </div>
 
-    <!-- Error / Alerta -->
+    <!-- Alerta / Mensaje de Estado -->
     <div id="errorMessage" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-5 mb-8 text-rose-800 flex items-start gap-4 shadow-sm">
       <div class="p-2.5 bg-rose-100 rounded-xl shrink-0 text-rose-600">
         <i data-lucide="alert-circle" class="w-6 h-6"></i>
       </div>
       <div>
-        <h3 class="font-bold text-base mb-1 text-rose-900" id="errorTitle">Guía no localizada (404)</h3>
-        <p class="text-sm text-rose-700 leading-relaxed" id="errorText">No se encontró información para este número de guía o la ruta de la API es incorrecta.</p>
+        <h3 class="font-bold text-base mb-1 text-rose-900" id="errorTitle">Guía no localizada</h3>
+        <p class="text-sm text-rose-700 leading-relaxed" id="errorText">La guía no existe en el sistema o la ruta no retornó resultados.</p>
       </div>
     </div>
 
-    <!-- Resultado / Card -->
+    <!-- Tarjeta de Resultados -->
     <div id="resultCard" class="hidden bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 custom-shadow">
       <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
         <div>
@@ -125,7 +125,7 @@
 
       <div class="mt-6">
         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-          <i data-lucide="file-text" class="w-4 h-4 text-slate-700"></i> Resultado de la API
+          <i data-lucide="file-text" class="w-4 h-4 text-slate-700"></i> Respuesta de la API
         </h3>
         <div class="bg-slate-900 rounded-xl p-4 overflow-x-auto border border-slate-800 shadow-inner">
           <pre id="jsonOutput" class="text-xs sm:text-sm font-mono text-amber-300 leading-relaxed whitespace-pre-wrap"></pre>
@@ -137,7 +137,7 @@
           <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i> Conexión Verificada
         </span>
         <span id="cuotaInfo" class="bg-slate-100 px-3 py-1 rounded-md text-slate-700 font-mono">
-          Estado: 200 OK
+          Consulta Exitosa (200 OK)
         </span>
       </div>
     </div>
@@ -146,7 +146,7 @@
 
   <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
     <p class="font-bold text-slate-700 uppercase tracking-widest mb-1">Zamarith Jeans &copy; 2026</p>
-    <p class="text-slate-400">Sistema de Rastreo Integrado con InterSoft</p>
+    <p class="text-slate-400">Sistema Integrado de Rastreo de Envíos</p>
   </footer>
 
   <script>
@@ -170,34 +170,43 @@
     const cuotaInfo = document.getElementById('cuotaInfo');
     const searchBtn = document.getElementById('searchBtn');
 
-    // Fetch súper seguro a prueba de HTML o 404
-    async function consultarAPI(guia) {
+    async function ejecutarFetch(urlTarget) {
       const headers = {
         'Authorization': `Bearer ${CONFIG.API_KEY}`,
         'X-API-Secret': CONFIG.SECRET_KEY,
         'Accept': 'application/json'
       };
+      
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(urlTarget)}`;
+      const res = await fetch(proxyUrl, { method: 'GET', headers: headers });
+      const rawText = await res.text();
 
-      // Intentamos con corsproxy para evitar bloqueos del navegador
-      const targetUrl = `${CONFIG.BASE_URL}/api/ext/consultar/${encodeURIComponent(guia)}`;
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
-
-      const response = await fetch(proxyUrl, { method: 'GET', headers: headers });
-      const rawText = await response.text();
-
-      let parsedData = null;
+      let parsed = null;
       try {
-        parsedData = JSON.parse(rawText);
+        parsed = JSON.parse(rawText);
       } catch (e) {
-        parsedData = null; // No era JSON, fue respuesta HTML (ej. 404 de servidor web)
+        parsed = null;
       }
 
-      return {
-        status: response.status,
-        ok: response.ok && parsedData !== null && parsedData.ok !== false,
-        data: parsedData,
-        raw: rawText
-      };
+      return { status: res.status, ok: res.ok && parsed !== null, data: parsed, raw: rawText };
+    }
+
+    async function consultarCompleto(guia) {
+      const codGuia = encodeURIComponent(guia);
+
+      // Intento 1: /api/ext/consultar/GUIA
+      let res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar/${codGuia}`);
+      if (res.ok) return res;
+
+      // Intento 2: /api/ext/consultar/GUIA/ (con barra final)
+      res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar/${codGuia}/`);
+      if (res.ok) return res;
+
+      // Intento 3: /api/ext/consultar?guia=GUIA
+      res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar?guia=${codGuia}`);
+      if (res.ok) return res;
+
+      return res; // Devuelve la última respuesta obtenida
     }
 
     form.addEventListener('submit', async (e) => {
@@ -211,30 +220,25 @@
       searchBtn.disabled = true;
 
       try {
-        const res = await consultarAPI(guia);
+        const res = await consultarCompleto(guia);
 
         loader.classList.add('hidden');
         searchBtn.disabled = false;
 
-        if (!res.ok) {
-          errorTitle.textContent = `Guía o endpoint no encontrado (${res.status})`;
-          if (res.data && res.data.mensaje) {
-            errorText.textContent = res.data.mensaje;
-          } else {
-            errorText.textContent = `La guía "${guia}" no existe o la URL de la API (${CONFIG.BASE_URL}/api/ext/consultar/...) devuelve un error 404 en el servidor.`;
-          }
+        if (!res.ok || (res.data && res.data.ok === false)) {
+          errorTitle.textContent = `Guía no encontrada (${res.status})`;
+          errorText.textContent = res.data?.mensaje || `La guía "${guia}" no fue encontrada en la base de datos de InterSoft. Verifica que el número ingresado sea correcto.`;
           errorMessage.classList.remove('hidden');
           return;
         }
 
-        // Si fue exitoso
         resGuia.textContent = guia;
         jsonOutput.textContent = JSON.stringify(res.data.datos || res.data, null, 2);
 
         if (res.data.cuota) {
           cuotaInfo.textContent = `Consultas restantes: ${res.data.cuota.disponibles} / ${res.data.cuota.limite}`;
         } else {
-          cuotaInfo.textContent = 'Petición procesada correctamente';
+          cuotaInfo.textContent = 'Consulta realizada con éxito';
         }
 
         resultCard.classList.remove('hidden');
@@ -242,8 +246,8 @@
       } catch (err) {
         loader.classList.add('hidden');
         searchBtn.disabled = false;
-        errorTitle.textContent = 'Error de Red';
-        errorText.textContent = 'No se pudo establecer comunicación con el servidor.';
+        errorTitle.textContent = 'Error de Conexión';
+        errorText.textContent = 'Ocurrió un inconveniente al procesar la solicitud.';
         errorMessage.classList.remove('hidden');
       }
     });
