@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rastreo de Envíos — InterSoft</title>
+  
+  <!-- Tailwind CSS via CDN para un diseño profesional y limpio -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons para la iconografía -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Estilos personalizados para animaciones y scrollbar */
+    pre::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    pre::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased">
+
+  <!-- Header / Barra Superior -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+          <i data-lucide="package-search" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="font-bold text-lg text-white tracking-tight block leading-tight">InterSoft Tracking</span>
+          <span class="text-xs text-slate-400">Sistema de Rastreos en Tiempo Real</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-xs text-emerald-400 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        API Conectada
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="max-w-3xl mx-auto px-4 py-12 w-full flex-grow">
+    
+    <!-- Titular de Bienvenida -->
+    <div class="text-center mb-10">
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+        Rastrea tu paquete o guía
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
+        Ingresa el número de guía o código de registro para obtener el estado del envío al instante.
+      </p>
+    </div>
+
+    <!-- Formulario de Consulta -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 sm:p-4 mb-8 shadow-2xl">
+      <form id="trackingForm" class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-grow">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </div>
+          <input 
+            type="text" 
+            id="trackingInput" 
+            placeholder="Ejemplo: REG-001..." 
+            class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-mono font-medium text-sm sm:text-base"
+            required
+            autocomplete="off"
+          />
+        </div>
+        <button 
+          type="submit" 
+          id="searchBtn"
+          class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 disabled:opacity-50"
+        >
+          <span>Consultar</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Carga / Spinner -->
+    <div id="loader" class="hidden text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-indigo-500 border-t-transparent mb-4"></div>
+      <p class="text-slate-400 text-sm font-medium">Consultando en tiempo real con InterSoft API...</p>
+    </div>
+
+    <!-- Alerta de Error / No Encontrado -->
+    <div id="errorMessage" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-2xl p-5 mb-8 text-rose-300 flex items-start gap-4">
+      <div class="p-2 bg-rose-500/20 rounded-lg shrink-0">
+        <i data-lucide="alert-triangle" class="w-6 h-6 text-rose-400"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-base mb-1 text-rose-200" id="errorTitle">Guía no encontrada</h3>
+        <p class="text-sm text-rose-300/80" id="errorText">Verifica el número ingresado e intentalo de nuevo.</p>
+      </div>
+    </div>
+
+    <!-- Card de Resultado / Detalles -->
+    <div id="resultCard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+      <!-- Encabezado del resultado -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 block mb-1">Registro Encontrado</span>
+          <h2 class="text-2xl font-bold text-white font-mono" id="resGuia">---</h2>
+        </div>
+        <div id="statusBadge" class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i> Consulta Exitosa
+        </div>
+      </div>
+
+      <!-- Datos devueltos -->
+      <div class="mt-6">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+          <i data-lucide="database" class="w-4 h-4 text-indigo-400"></i> Datos de la Respuesta
+        </h3>
+        <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 overflow-x-auto">
+          <pre id="jsonOutput" class="text-xs sm:text-sm font-mono text-indigo-300 whitespace-pre-wrap leading-relaxed"></pre>
+        </div>
+      </div>
+
+      <!-- Info de Cuota de la API -->
+      <div class="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+        <span class="flex items-center gap-1">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i> Conexión Autenticada
+        </span>
+        <span id="cuotaInfo" class="font-mono bg-slate-800 px-2.5 py-1 rounded text-slate-300">
+          Consultas restantes: --
+        </span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Pie de página -->
+  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+    <p>© 2026 Sistema de Rastreo de Envíos. Integrado con InterSoft API.</p>
+  </footer>
+
+  <!-- Lógica JavaScript (Conexión directa a la API) -->
+  <script>
+    // Configuración de Credenciales e Integración
+    const CONFIG = {
+      BASE_URL: 'https://interlasamericas.kodevasoft.space',
+      API_KEY: 'ira_5580ec17777e39dd3dc4c24554267f29fb60e03bcbd63338',
+      SECRET_KEY: 'irs_e2badc04b4db12927c7d178157e71f2323119c64d40e750d'
+    };
+
+    // Inicializar Íconos
+    lucide.createIcons();
+
+    // Referencias al DOM
+    const form = document.getElementById('trackingForm');
+    const input = document.getElementById('trackingInput');
+    const loader = document.getElementById('loader');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorTitle = document.getElementById('errorTitle');
+    const errorText = document.getElementById('errorText');
+    const resultCard = document.getElementById('resultCard');
+    const resGuia = document.getElementById('resGuia');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const cuotaInfo = document.getElementById('cuotaInfo');
+    const searchBtn = document.getElementById('searchBtn');
+
+    // Evento Formulario
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = input.value.trim();
+      if (!id) return;
+
+      // Resetear vista
+      errorMessage.classList.add('hidden');
+      resultCard.classList.add('hidden');
+      loader.classList.remove('hidden');
+      searchBtn.disabled = true;
+
+      try {
+        // Petición directa a la InterSoft API usando tus credenciales
+        const response = await fetch(`${CONFIG.BASE_URL}/api/ext/consultar/${encodeURIComponent(id)}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${CONFIG.API_KEY}`,
+            'X-API-Secret': CONFIG.SECRET_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        loader.classList.add('hidden');
+        searchBtn.disabled = false;
+
+        if (!response.ok || !data.ok) {
+          errorTitle.textContent = response.status === 404 ? 'Registro no encontrado' : 'Atención';
+          errorText.textContent = data.mensaje || 'No fue posible obtener información para este número de registro.';
+          errorMessage.classList.remove('hidden');
+          return;
+        }
+
+        // Renderizado exitoso
+        resGuia.textContent = id;
+        
+        // Imprimir datos formato bonito
+        jsonOutput.textContent = JSON.stringify(data.datos || data, null, 2);
+
+        // Mostrar consumo de cuotas diario
+        if (data.cuota) {
+          cuotaInfo.textContent = `Cuota disponible: ${data.cuota.disponibles} / ${data.cuota.limite}`;
+        } else {
+          cuotaInfo.textContent = 'Petición exitosa';
+        }
+
+        resultCard.classList.remove('hidden');
+
+      } catch (err) {
+        console.error('Error de red:', err);
+        loader.classList.add('hidden');
+        searchBtn.disabled = false;
+        errorTitle.textContent = 'Error de Conexión';
+        errorText.textContent = 'Ocurrió un problema de red o política CORS al consultar la API.';
+        errorMessage.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
