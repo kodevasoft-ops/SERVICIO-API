@@ -3,135 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prueba de Rastreo de Envíos</title>
+  <title>Rastreo de Pedidos | ZAMARITH</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    body { font-family: 'Montserrat', sans-serif; }
     .timeline-line::before {
       content: '';
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 15px;
+      left: 19px;
       width: 2px;
-      background: #e5e7eb;
+      background: #e2e8f0;
       z-index: 0;
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+<body class="bg-stone-50 text-stone-900 min-h-screen flex flex-col justify-between">
 
-  <!-- CONTENEDOR PRINCIPAL -->
-  <main class="w-full max-w-3xl bg-white shadow-xl rounded-2xl border border-slate-100 overflow-hidden">
+  <!-- BARRA SUPERIOR PROMOCIONAL -->
+  <div class="bg-black text-white text-[11px] font-medium tracking-widest uppercase py-2 text-center overflow-hidden">
+    <span>Envío Gratis a todo el país &nbsp;•&nbsp; Rastrear mi pedido &nbsp;•&nbsp; Se parte de la familia ZAMARITH</span>
+  </div>
+
+  <!-- NAVBAR PRINCIPAL ESTILO ZAMARITH -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <!-- LOGO -->
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-crown text-black text-xl"></i>
+        <span class="text-xl font-extrabold tracking-widest uppercase">ZAMARITH</span>
+      </div>
+
+      <!-- MENÚ SIMPLE -->
+      <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-stone-700">
+        <a href="#" class="hover:text-black transition">Jeans</a>
+        <a href="#" class="hover:text-black transition">Shorts</a>
+        <a href="#" class="hover:text-black transition">Faldas</a>
+        <a href="#" class="hover:text-black transition">Sets</a>
+        <a href="#" class="text-black underline underline-offset-4">Rastrear Pedido</a>
+      </nav>
+
+      <!-- ICONOS -->
+      <div class="flex items-center gap-4 text-stone-800 text-lg">
+        <i class="fa-solid fa-magnifying-glass cursor-pointer hover:text-black"></i>
+        <i class="fa-regular fa-user cursor-pointer hover:text-black"></i>
+        <i class="fa-solid fa-bag-shopping cursor-pointer hover:text-black"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL DE RASTREO -->
+  <main class="max-w-4xl w-full mx-auto p-4 md:p-8 flex-1">
     
-    <!-- HEADER -->
-    <header class="bg-slate-900 text-white p-6 text-center">
-      <h1 class="text-2xl md:text-3xl font-bold tracking-tight flex items-center justify-center gap-3">
-        <i class="fa-solid fa-truck-fast text-indigo-400"></i>
-        Rastreo de Envíos (Prueba)
+    <!-- BANNER DE BÚSQUEDA -->
+    <div class="bg-white rounded-2xl p-6 md:p-10 border border-stone-200 shadow-sm text-center mb-8">
+      <h1 class="text-2xl md:text-3xl font-light uppercase tracking-widest text-stone-900 mb-2">
+        Consulta el estado de tu <span class="font-extrabold">Envío</span>
       </h1>
-      <p class="text-slate-400 text-sm mt-1">Prueba de conexión con Tokens `ira_` y `irs_`</p>
-    </header>
+      <p class="text-xs md:text-sm text-stone-500 max-w-md mx-auto mb-6">
+        Ingresa el número de guía asignado a tu compra para consultar la trazabilidad en tiempo real.
+      </p>
 
-    <!-- FORMULARIO DE BÚSQUEDA -->
-    <section class="p-6 border-b border-slate-100 bg-slate-50/50">
-      <form id="formRastreo" class="flex flex-col sm:flex-row gap-3">
+      <!-- FORMULARIO -->
+      <form id="formRastreo" class="max-w-xl mx-auto flex flex-col sm:flex-row gap-2">
         <div class="relative flex-1">
-          <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input 
             type="text" 
             id="inputGuia" 
-            placeholder="Ingresa la guía de prueba (Ej: 700199137878)" 
+            placeholder="NÚMERO DE GUÍA (EJ: 700199137878)" 
             required
-            class="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono uppercase text-slate-800 placeholder:text-slate-400"
+            class="w-full px-5 py-3.5 bg-stone-50 border border-stone-300 rounded-lg text-xs tracking-wider uppercase font-mono font-semibold focus:outline-none focus:border-black transition"
           >
         </div>
         <button 
           type="submit" 
           id="btnBuscar"
-          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95"
+          class="bg-black hover:bg-stone-800 text-white text-xs tracking-widest font-bold uppercase px-8 py-3.5 rounded-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95"
         >
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <span>Probar Guía</span>
+          <span>Buscar</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
       </form>
-    </section>
+    </div>
 
-    <!-- ÁREA DE CARGA -->
+    <!-- LOADER -->
     <div id="loader" class="hidden p-12 text-center">
-      <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-t-indigo-600"></div>
-      <p class="text-slate-500 mt-3 text-sm font-medium">Validando tokens y consultando guía...</p>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-stone-300 border-t-black"></div>
+      <p class="text-xs text-stone-500 tracking-wider uppercase font-medium mt-3">Consultando guía en sistema...</p>
     </div>
 
-    <!-- MENSAJE DE ERROR O ALERTA -->
-    <div id="msgError" class="hidden m-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3">
-      <i class="fa-solid fa-circle-exclamation text-lg mt-0.5 text-red-500"></i>
-      <div id="textoError">Ocurrió un error en la autenticación o consulta.</div>
+    <!-- ERROR -->
+    <div id="msgError" class="hidden p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-medium mb-6 flex items-center gap-3">
+      <i class="fa-solid fa-circle-exclamation text-base"></i>
+      <span id="textoError">No se encontraron datos para la guía ingresada.</span>
     </div>
 
-    <!-- RESULTADOS DEL RASTREO -->
-    <section id="resultado" class="hidden p-6 space-y-6">
+    <!-- TARJETA DE RESULTADOS -->
+    <div id="resultado" class="hidden bg-white border border-stone-200 rounded-2xl shadow-sm overflow-hidden space-y-6 p-6 md:p-8">
       
-      <!-- ESTADO GENERAL -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200/80">
+      <!-- HEADER CON GUÍA Y ESTADO -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-100">
         <div>
-          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Número de Guía</div>
-          <div id="resGuia" class="text-xl font-bold font-mono text-slate-900">--</div>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-stone-400 block">Número de Guía</span>
+          <span id="resGuia" class="text-2xl font-mono font-bold text-black">--</span>
         </div>
-        <div id="badgeEstado" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-indigo-100 text-indigo-800">
-          <i id="iconoEstado" class="fa-solid fa-clock"></i>
-          <span id="textoEstado">--</span>
+        <div>
+          <span id="badgeEstado" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-stone-100 text-stone-800 border border-stone-300">
+            <i class="fa-solid fa-truck-ramp-box"></i>
+            <span id="textoEstado">EN TRANSITO</span>
+          </span>
         </div>
       </div>
 
-      <!-- DETALLES DE ORIGEN Y DESTINO -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
-          <div class="text-xs text-slate-400 font-medium">Origen</div>
-          <div id="resOrigen" class="text-base font-semibold text-slate-800 mt-1">--</div>
-          <div id="resRemitente" class="text-xs text-slate-500 mt-1">--</div>
+      <!-- DATOS DE CLIENTE Y DESPACHO (REMITENTE Y DESTINATARIO COMPLETO) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- REMITENTE -->
+        <div class="p-5 rounded-xl bg-stone-50/80 border border-stone-200/60">
+          <div class="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-store text-stone-500"></i>
+            <span>Información del Remitente</span>
+          </div>
+          <div class="space-y-1.5 text-xs text-stone-600">
+            <p><span class="text-stone-400 font-medium">Nombre:</span> <strong id="resRemitenteNombre" class="text-stone-900">--</strong></p>
+            <p><span class="text-stone-400 font-medium">Teléfono:</span> <strong id="resRemitenteTel" class="text-stone-900 font-mono">--</strong></p>
+            <p><span class="text-stone-400 font-medium">Origen:</span> <strong id="resOrigen" class="text-stone-900">--</strong></p>
+          </div>
         </div>
-        <div class="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
-          <div class="text-xs text-slate-400 font-medium">Destino</div>
-          <div id="resDestino" class="text-base font-semibold text-slate-800 mt-1">--</div>
-          <div id="resDestinatario" class="text-xs text-slate-500 mt-1">--</div>
+
+        <!-- DESTINATARIO -->
+        <div class="p-5 rounded-xl bg-stone-50/80 border border-stone-200/60">
+          <div class="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-user-tag text-stone-500"></i>
+            <span>Información del Destinatario</span>
+          </div>
+          <div class="space-y-1.5 text-xs text-stone-600">
+            <p><span class="text-stone-400 font-medium">Nombre:</span> <strong id="resDestinatarioNombre" class="text-stone-900">--</strong></p>
+            <p><span class="text-stone-400 font-medium">Teléfono:</span> <strong id="resDestinatarioTel" class="text-stone-900 font-mono">--</strong></p>
+            <p><span class="text-stone-400 font-medium">Destino:</span> <strong id="resDestino" class="text-stone-900">--</strong></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DETALLES DE ENVÍO -->
+      <div class="p-4 rounded-xl border border-stone-100 bg-stone-50/40 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+        <div>
+          <span class="block text-stone-400 font-medium">Servicio</span>
+          <strong id="resServicio" class="text-stone-800">--</strong>
+        </div>
+        <div>
+          <span class="block text-stone-400 font-medium">Fecha Despacho</span>
+          <strong id="resFechaEnvio" class="text-stone-800">--</strong>
+        </div>
+        <div>
+          <span class="block text-stone-400 font-medium">Est. Entrega</span>
+          <strong id="resFechaEstimada" class="text-stone-800">--</strong>
+        </div>
+        <div>
+          <span class="block text-stone-400 font-medium">Piezas / Contenido</span>
+          <strong id="resDetalleEnvio" class="text-stone-800">--</strong>
         </div>
       </div>
 
-      <!-- METADATOS -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-4 rounded-xl">
-        <div>
-          <span class="block text-slate-400 font-medium">Servicio:</span>
-          <strong id="resServicio" class="text-slate-700">--</strong>
-        </div>
-        <div>
-          <span class="block text-slate-400 font-medium">Fecha Envío:</span>
-          <strong id="resFechaEnvio" class="text-slate-700">--</strong>
-        </div>
-        <div>
-          <span class="block text-slate-400 font-medium">Est. Entrega:</span>
-          <strong id="resFechaEstimada" class="text-slate-700">--</strong>
-        </div>
-      </div>
-
-      <!-- HISTORIAL (TIMELINE) -->
-      <div>
-        <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-list-check text-indigo-600"></i>
-          Trazabilidad / Historial
+      <!-- TIMELINE / HISTORIAL DE TRAZABILIDAD -->
+      <div class="pt-4">
+        <h3 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-6 flex items-center gap-2">
+          <i class="fa-solid fa-route"></i> Trazabilidad del Pedido
         </h3>
         <div id="timeline" class="relative timeline-line space-y-6 pl-2"></div>
       </div>
 
-    </section>
+    </div>
 
   </main>
 
-  <!-- LÓGICA CON CREDENCIALES CONFIGURADAS -->
+  <!-- FOOTER ESTILO ZAMARITH -->
+  <footer class="bg-black text-white text-center py-6 text-xs text-stone-400 mt-12 border-t border-stone-800">
+    <p>© 2026 ZAMARITH. Todos los derechos reservados. Powered by KodevaSoft API</p>
+  </footer>
+
+  <!-- SCRIPT CONECTADO A LA API REAL -->
   <script>
     const API_CONFIG = {
-      // Ajusta la URL según el host donde ejecutes tu servidor Node.js
-      baseUrl: 'https://interlasamericas.kodevasoft.space/api/ext', 
+      baseUrl: 'https://interlasamericas.kodevasoft.space/api/ext',
       tokenAcceso: 'ira_5580ec17777e39dd3dc4c24554267f29fb60e03bcbd63338',
       tokenSeguridad: 'irs_e2badc04b4db12927c7d178157e71f2323119c64d40e750d'
     };
@@ -167,13 +225,13 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.mensaje || data.error || `Error HTTP ${response.status}`);
+          throw new Error(data.mensaje || data.error || `No se encontró la guía ${guia}`);
         }
 
         renderizarResultado(data);
 
       } catch (error) {
-        textoError.textContent = `[Error de prueba]: ${error.message}`;
+        textoError.textContent = error.message;
         mostrarElemento(msgError);
       } finally {
         ocultarElemento(loader);
@@ -183,39 +241,52 @@
 
     function renderizarResultado(data) {
       document.getElementById('resGuia').textContent = data.guia || '--';
-      document.getElementById('textoEstado').textContent = data.estado?.texto || 'DESCONOCIDO';
       
-      document.getElementById('resOrigen').textContent = data.envio?.origen || 'N/A';
-      document.getElementById('resRemitente').textContent = data.remitente?.nombre ? `Remitente: ${data.remitente.nombre}` : '';
+      // Estado
+      document.getElementById('textoEstado').textContent = data.estado?.texto || 'PROCESANDO';
 
-      document.getElementById('resDestino').textContent = data.envio?.destino || 'N/A';
-      document.getElementById('resDestinatario').textContent = data.destinatario?.nombre ? `Destinatario: ${data.destinatario.nombre}` : '';
+      // Remitente
+      document.getElementById('resRemitenteNombre').textContent = data.remitente?.nombre || 'ZAMARITH S.A.S';
+      document.getElementById('resRemitenteTel').textContent = data.remitente?.telefono || data.remitente?.celular || '--';
+      document.getElementById('resOrigen').textContent = data.envio?.origen || 'Cúcuta';
 
-      document.getElementById('resServicio').textContent = data.envio?.servicio || 'Estándar';
+      // Destinatario
+      document.getElementById('resDestinatarioNombre').textContent = data.destinatario?.nombre || '--';
+      document.getElementById('resDestinatarioTel').textContent = data.destinatario?.telefono || data.destinatario?.celular || '--';
+      document.getElementById('resDestino').textContent = data.envio?.destino || '--';
+
+      // Detalles de envío
+      document.getElementById('resServicio').textContent = data.envio?.servicio || 'Nacional Express';
       document.getElementById('resFechaEnvio').textContent = data.envio?.fecha_envio || '--';
       document.getElementById('resFechaEstimada').textContent = data.envio?.fecha_estimada_entrega || '--';
+      
+      const detallesExtra = [];
+      if(data.envio?.piezas) detallesExtra.push(`${data.envio.piezas} Paquete(s)`);
+      if(data.envio?.peso) detallesExtra.push(`${data.envio.peso} Kg`);
+      document.getElementById('resDetalleEnvio').textContent = detallesExtra.join(' / ') || '1 Paquete';
 
+      // Historial
       const containerTimeline = document.getElementById('timeline');
       containerTimeline.innerHTML = '';
 
       const historial = data.historial || [];
       if (historial.length === 0) {
-        containerTimeline.innerHTML = '<p class="text-sm text-slate-400 italic">Sin eventos registrados.</p>';
+        containerTimeline.innerHTML = '<p class="text-xs text-stone-400 italic">No hay registros de trazabilidad todavía.</p>';
       } else {
         historial.forEach((item, index) => {
           const esUltimo = index === historial.length - 1;
           const htmlItem = `
             <div class="relative flex items-start gap-4 z-10">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${esUltimo ? 'bg-indigo-600 text-white ring-4 ring-indigo-100' : 'bg-slate-200 text-slate-600'}">
-                <i class="fa-solid ${esUltimo ? 'fa-location-dot' : 'fa-check'} text-xs"></i>
+              <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${esUltimo ? 'bg-black text-white border-black ring-4 ring-stone-100' : 'bg-white text-stone-400 border-stone-200'}">
+                <i class="fa-solid ${esUltimo ? 'fa-truck-fast' : 'fa-check'} text-xs"></i>
               </div>
-              <div class="flex-1 bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="font-bold text-sm text-slate-800">${item.descripcion_estado || 'Evento'}</span>
-                  <span class="text-xs text-slate-400 font-mono">${item.fecha_cambio || ''}</span>
+              <div class="flex-1 bg-stone-50/60 p-4 rounded-xl border border-stone-200/80">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <span class="font-bold text-xs uppercase text-stone-900 tracking-wider">${item.descripcion_estado || 'Actualización'}</span>
+                  <span class="text-[11px] text-stone-400 font-mono">${item.fecha_cambio || ''}</span>
                 </div>
-                ${item.ciudad ? `<div class="text-xs font-semibold text-indigo-600 mt-0.5"><i class="fa-solid fa-city mr-1"></i>${item.ciudad}</div>` : ''}
-                ${item.observacion ? `<p class="text-xs text-slate-500 mt-1">${item.observacion}</p>` : ''}
+                ${item.ciudad ? `<div class="text-xs font-semibold text-stone-600 mt-1"><i class="fa-solid fa-location-dot text-stone-400 mr-1"></i>${item.ciudad}</div>` : ''}
+                ${item.observacion ? `<p class="text-xs text-stone-500 mt-1">${item.observacion}</p>` : ''}
               </div>
             </div>
           `;
