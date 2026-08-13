@@ -1,256 +1,233 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreo de Envíos | Zamarith Jeans</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba de Rastreo de Envíos</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .custom-shadow { box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05); }
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 15px;
+      width: 2px;
+      background: #e5e7eb;
+      z-index: 0;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col justify-between antialiased">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
 
-  <!-- Header Zamarith Jeans -->
-  <div class="bg-slate-900 text-slate-300 text-[11px] font-semibold tracking-widest uppercase py-2 px-4 text-center border-b border-slate-800">
-    <span class="text-amber-400">ZAMARITH JEANS</span> &bull; CONSULTA DE GUÍAS Y ENVÍOS EN TIEMPO REAL
-  </div>
-
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-amber-400 font-extrabold text-xl shadow-md">
-          Z
-        </div>
-        <div class="flex flex-col">
-          <span class="font-extrabold text-xl tracking-wider text-slate-900 uppercase leading-none">ZAMARITH</span>
-          <span class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mt-1">JEANS DENIM CO.</span>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-xs font-semibold text-emerald-700">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Rastreador Oficial Activo
-      </div>
-    </div>
-  </header>
-
-  <!-- Contenedor Principal -->
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-12 w-full flex-grow">
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="w-full max-w-3xl bg-white shadow-xl rounded-2xl border border-slate-100 overflow-hidden">
     
-    <div class="text-center max-w-xl mx-auto mb-10">
-      <span class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full mb-3">
-        Centro de Logística
-      </span>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-        Rastrea tu pedido
+    <!-- HEADER -->
+    <header class="bg-slate-900 text-white p-6 text-center">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight flex items-center justify-center gap-3">
+        <i class="fa-solid fa-truck-fast text-indigo-400"></i>
+        Rastreo de Envíos (Prueba)
       </h1>
-      <p class="text-slate-500 text-sm">
-        Ingresa tu número de guía o código de paquete para consultar la información en tiempo real.
-      </p>
-    </div>
+      <p class="text-slate-400 text-sm mt-1">Prueba de conexión con Tokens `ira_` y `irs_`</p>
+    </header>
 
-    <!-- Buscador -->
-    <div class="bg-white border border-slate-200 rounded-2xl p-4 custom-shadow mb-8">
-      <form id="trackingForm" class="flex flex-col sm:flex-row gap-3">
-        <div class="relative flex-grow">
-          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-            <i data-lucide="package" class="w-5 h-5"></i>
-          </div>
+    <!-- FORMULARIO DE BÚSQUEDA -->
+    <section class="p-6 border-b border-slate-100 bg-slate-50/50">
+      <form id="formRastreo" class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input 
             type="text" 
-            id="trackingInput" 
-            placeholder="Ingresa la guía (Ej: 700199137878)" 
-            class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all font-semibold uppercase text-sm sm:text-base tracking-wide"
+            id="inputGuia" 
+            placeholder="Ingresa la guía de prueba (Ej: 700199137878)" 
             required
-            autocomplete="off"
-          />
+            class="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono uppercase text-slate-800 placeholder:text-slate-400"
+          >
         </div>
         <button 
           type="submit" 
-          id="searchBtn"
-          class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20 active:scale-[0.98] disabled:opacity-50"
+          id="btnBuscar"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95"
         >
-          <span>Consultar</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Probar Guía</span>
         </button>
       </form>
+    </section>
+
+    <!-- ÁREA DE CARGA -->
+    <div id="loader" class="hidden p-12 text-center">
+      <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-t-indigo-600"></div>
+      <p class="text-slate-500 mt-3 text-sm font-medium">Validando tokens y consultando guía...</p>
     </div>
 
-    <!-- Loader -->
-    <div id="loader" class="hidden text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-900 border-t-transparent mb-4"></div>
-      <p class="text-slate-600 font-semibold text-sm">Consultando guía en InterSoft API...</p>
+    <!-- MENSAJE DE ERROR O ALERTA -->
+    <div id="msgError" class="hidden m-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3">
+      <i class="fa-solid fa-circle-exclamation text-lg mt-0.5 text-red-500"></i>
+      <div id="textoError">Ocurrió un error en la autenticación o consulta.</div>
     </div>
 
-    <!-- Alerta / Mensaje de Estado -->
-    <div id="errorMessage" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-5 mb-8 text-rose-800 flex items-start gap-4 shadow-sm">
-      <div class="p-2.5 bg-rose-100 rounded-xl shrink-0 text-rose-600">
-        <i data-lucide="alert-circle" class="w-6 h-6"></i>
-      </div>
-      <div>
-        <h3 class="font-bold text-base mb-1 text-rose-900" id="errorTitle">Guía no localizada</h3>
-        <p class="text-sm text-rose-700 leading-relaxed" id="errorText">La guía no existe en el sistema o la ruta no retornó resultados.</p>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Resultados -->
-    <div id="resultCard" class="hidden bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 custom-shadow">
-      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+    <!-- RESULTADOS DEL RASTREO -->
+    <section id="resultado" class="hidden p-6 space-y-6">
+      
+      <!-- ESTADO GENERAL -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200/80">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Guía Consultada</span>
-          <h2 class="text-2xl font-black text-slate-900 font-mono tracking-wider" id="resGuia">---</h2>
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Número de Guía</div>
+          <div id="resGuia" class="text-xl font-bold font-mono text-slate-900">--</div>
         </div>
-        <div id="statusBadge" class="px-4 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-2">
-          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
-          <span>Información Encontrada</span>
+        <div id="badgeEstado" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-indigo-100 text-indigo-800">
+          <i id="iconoEstado" class="fa-solid fa-clock"></i>
+          <span id="textoEstado">--</span>
         </div>
       </div>
 
-      <div class="mt-6">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-          <i data-lucide="file-text" class="w-4 h-4 text-slate-700"></i> Respuesta de la API
+      <!-- DETALLES DE ORIGEN Y DESTINO -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+          <div class="text-xs text-slate-400 font-medium">Origen</div>
+          <div id="resOrigen" class="text-base font-semibold text-slate-800 mt-1">--</div>
+          <div id="resRemitente" class="text-xs text-slate-500 mt-1">--</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+          <div class="text-xs text-slate-400 font-medium">Destino</div>
+          <div id="resDestino" class="text-base font-semibold text-slate-800 mt-1">--</div>
+          <div id="resDestinatario" class="text-xs text-slate-500 mt-1">--</div>
+        </div>
+      </div>
+
+      <!-- METADATOS -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-4 rounded-xl">
+        <div>
+          <span class="block text-slate-400 font-medium">Servicio:</span>
+          <strong id="resServicio" class="text-slate-700">--</strong>
+        </div>
+        <div>
+          <span class="block text-slate-400 font-medium">Fecha Envío:</span>
+          <strong id="resFechaEnvio" class="text-slate-700">--</strong>
+        </div>
+        <div>
+          <span class="block text-slate-400 font-medium">Est. Entrega:</span>
+          <strong id="resFechaEstimada" class="text-slate-700">--</strong>
+        </div>
+      </div>
+
+      <!-- HISTORIAL (TIMELINE) -->
+      <div>
+        <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-indigo-600"></i>
+          Trazabilidad / Historial
         </h3>
-        <div class="bg-slate-900 rounded-xl p-4 overflow-x-auto border border-slate-800 shadow-inner">
-          <pre id="jsonOutput" class="text-xs sm:text-sm font-mono text-amber-300 leading-relaxed whitespace-pre-wrap"></pre>
-        </div>
+        <div id="timeline" class="relative timeline-line space-y-6 pl-2"></div>
       </div>
 
-      <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2 font-medium">
-        <span class="flex items-center gap-1 text-slate-500">
-          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i> Conexión Verificada
-        </span>
-        <span id="cuotaInfo" class="bg-slate-100 px-3 py-1 rounded-md text-slate-700 font-mono">
-          Consulta Exitosa (200 OK)
-        </span>
-      </div>
-    </div>
+    </section>
 
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-    <p class="font-bold text-slate-700 uppercase tracking-widest mb-1">Zamarith Jeans &copy; 2026</p>
-    <p class="text-slate-400">Sistema Integrado de Rastreo de Envíos</p>
-  </footer>
-
+  <!-- LÓGICA CON CREDENCIALES CONFIGURADAS -->
   <script>
-    const CONFIG = {
-      BASE_URL: 'https://interlasamericas.kodevasoft.space',
-      API_KEY: 'ira_5580ec17777e39dd3dc4c24554267f29fb60e03bcbd63338',
-      SECRET_KEY: 'irs_e2badc04b4db12927c7d178157e71f2323119c64d40e750d'
+    const API_CONFIG = {
+      // Ajusta la URL según el host donde ejecutes tu servidor Node.js
+      baseUrl: 'https://interlasamericas.kodevasoft.space/api/ext', 
+      tokenAcceso: 'ira_5580ec17777e39dd3dc4c24554267f29fb60e03bcbd63338',
+      tokenSeguridad: 'irs_e2badc04b4db12927c7d178157e71f2323119c64d40e750d'
     };
 
-    lucide.createIcons();
-
-    const form = document.getElementById('trackingForm');
-    const input = document.getElementById('trackingInput');
+    const formRastreo = document.getElementById('formRastreo');
+    const inputGuia = document.getElementById('inputGuia');
+    const btnBuscar = document.getElementById('btnBuscar');
     const loader = document.getElementById('loader');
-    const errorMessage = document.getElementById('errorMessage');
-    const errorTitle = document.getElementById('errorTitle');
-    const errorText = document.getElementById('errorText');
-    const resultCard = document.getElementById('resultCard');
-    const resGuia = document.getElementById('resGuia');
-    const jsonOutput = document.getElementById('jsonOutput');
-    const cuotaInfo = document.getElementById('cuotaInfo');
-    const searchBtn = document.getElementById('searchBtn');
+    const msgError = document.getElementById('msgError');
+    const textoError = document.getElementById('textoError');
+    const resultado = document.getElementById('resultado');
 
-    async function ejecutarFetch(urlTarget) {
-      const headers = {
-        'Authorization': `Bearer ${CONFIG.API_KEY}`,
-        'X-API-Secret': CONFIG.SECRET_KEY,
-        'Accept': 'application/json'
-      };
-      
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(urlTarget)}`;
-      const res = await fetch(proxyUrl, { method: 'GET', headers: headers });
-      const rawText = await res.text();
-
-      let parsed = null;
-      try {
-        parsed = JSON.parse(rawText);
-      } catch (e) {
-        parsed = null;
-      }
-
-      return { status: res.status, ok: res.ok && parsed !== null, data: parsed, raw: rawText };
-    }
-
-    async function consultarCompleto(guia) {
-      const codGuia = encodeURIComponent(guia);
-
-      // Intento 1: /api/ext/consultar/GUIA
-      let res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar/${codGuia}`);
-      if (res.ok) return res;
-
-      // Intento 2: /api/ext/consultar/GUIA/ (con barra final)
-      res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar/${codGuia}/`);
-      if (res.ok) return res;
-
-      // Intento 3: /api/ext/consultar?guia=GUIA
-      res = await ejecutarFetch(`${CONFIG.BASE_URL}/api/ext/consultar?guia=${codGuia}`);
-      if (res.ok) return res;
-
-      return res; // Devuelve la última respuesta obtenida
-    }
-
-    form.addEventListener('submit', async (e) => {
+    formRastreo.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const guia = input.value.trim();
+      const guia = inputGuia.value.trim().toUpperCase();
       if (!guia) return;
 
-      errorMessage.classList.add('hidden');
-      resultCard.classList.add('hidden');
-      loader.classList.remove('hidden');
-      searchBtn.disabled = true;
+      ocultarElemento(msgError);
+      ocultarElemento(resultado);
+      mostrarElemento(loader);
+      btnBuscar.disabled = true;
 
       try {
-        const res = await consultarCompleto(guia);
+        const response = await fetch(`${API_CONFIG.baseUrl}/rastrear/${encodeURIComponent(guia)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_CONFIG.tokenAcceso}`,
+            'X-API-Secret': API_CONFIG.tokenSeguridad
+          }
+        });
 
-        loader.classList.add('hidden');
-        searchBtn.disabled = false;
+        const data = await response.json();
 
-        if (!res.ok || (res.data && res.data.ok === false)) {
-          errorTitle.textContent = `Guía no encontrada (${res.status})`;
-          errorText.textContent = res.data?.mensaje || `La guía "${guia}" no fue encontrada en la base de datos de InterSoft. Verifica que el número ingresado sea correcto.`;
-          errorMessage.classList.remove('hidden');
-          return;
+        if (!response.ok) {
+          throw new Error(data.mensaje || data.error || `Error HTTP ${response.status}`);
         }
 
-        resGuia.textContent = guia;
-        jsonOutput.textContent = JSON.stringify(res.data.datos || res.data, null, 2);
+        renderizarResultado(data);
 
-        if (res.data.cuota) {
-          cuotaInfo.textContent = `Consultas restantes: ${res.data.cuota.disponibles} / ${res.data.cuota.limite}`;
-        } else {
-          cuotaInfo.textContent = 'Consulta realizada con éxito';
-        }
-
-        resultCard.classList.remove('hidden');
-
-      } catch (err) {
-        loader.classList.add('hidden');
-        searchBtn.disabled = false;
-        errorTitle.textContent = 'Error de Conexión';
-        errorText.textContent = 'Ocurrió un inconveniente al procesar la solicitud.';
-        errorMessage.classList.remove('hidden');
+      } catch (error) {
+        textoError.textContent = `[Error de prueba]: ${error.message}`;
+        mostrarElemento(msgError);
+      } finally {
+        ocultarElemento(loader);
+        btnBuscar.disabled = false;
       }
     });
+
+    function renderizarResultado(data) {
+      document.getElementById('resGuia').textContent = data.guia || '--';
+      document.getElementById('textoEstado').textContent = data.estado?.texto || 'DESCONOCIDO';
+      
+      document.getElementById('resOrigen').textContent = data.envio?.origen || 'N/A';
+      document.getElementById('resRemitente').textContent = data.remitente?.nombre ? `Remitente: ${data.remitente.nombre}` : '';
+
+      document.getElementById('resDestino').textContent = data.envio?.destino || 'N/A';
+      document.getElementById('resDestinatario').textContent = data.destinatario?.nombre ? `Destinatario: ${data.destinatario.nombre}` : '';
+
+      document.getElementById('resServicio').textContent = data.envio?.servicio || 'Estándar';
+      document.getElementById('resFechaEnvio').textContent = data.envio?.fecha_envio || '--';
+      document.getElementById('resFechaEstimada').textContent = data.envio?.fecha_estimada_entrega || '--';
+
+      const containerTimeline = document.getElementById('timeline');
+      containerTimeline.innerHTML = '';
+
+      const historial = data.historial || [];
+      if (historial.length === 0) {
+        containerTimeline.innerHTML = '<p class="text-sm text-slate-400 italic">Sin eventos registrados.</p>';
+      } else {
+        historial.forEach((item, index) => {
+          const esUltimo = index === historial.length - 1;
+          const htmlItem = `
+            <div class="relative flex items-start gap-4 z-10">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${esUltimo ? 'bg-indigo-600 text-white ring-4 ring-indigo-100' : 'bg-slate-200 text-slate-600'}">
+                <i class="fa-solid ${esUltimo ? 'fa-location-dot' : 'fa-check'} text-xs"></i>
+              </div>
+              <div class="flex-1 bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-bold text-sm text-slate-800">${item.descripcion_estado || 'Evento'}</span>
+                  <span class="text-xs text-slate-400 font-mono">${item.fecha_cambio || ''}</span>
+                </div>
+                ${item.ciudad ? `<div class="text-xs font-semibold text-indigo-600 mt-0.5"><i class="fa-solid fa-city mr-1"></i>${item.ciudad}</div>` : ''}
+                ${item.observacion ? `<p class="text-xs text-slate-500 mt-1">${item.observacion}</p>` : ''}
+              </div>
+            </div>
+          `;
+          containerTimeline.insertAdjacentHTML('beforeend', htmlItem);
+        });
+      }
+
+      mostrarElemento(resultado);
+    }
+
+    function mostrarElemento(el) { el.classList.remove('hidden'); }
+    function ocultarElemento(el) { el.classList.add('hidden'); }
   </script>
 </body>
 </html>
